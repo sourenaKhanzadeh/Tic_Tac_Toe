@@ -55,31 +55,42 @@ class Board(Settings):
         self.r = r
         self.c = c
         self.offset = 200
+        self.img = pg.image.load('./res/xxx.png').convert_alpha()
         self.board  = [
             [0,0,0],
-            [0,1,0],
+            [0,0,0],
             [0,0,0]
         ]
+        self.team = True
 
     def draw(self):
         block_size = 100
         for y in range(self.r):
             for x in range(self.c):
                 if self.board[y][x] == 1:
-                    img = pg.image.load('./res/xxx.png').convert_alpha()
-                    img = pg.transform.scale(img, (block_size, block_size))
-                    self.screen.blit(img, (x*block_size, y*block_size))
+                    self.img = pg.image.load('./res/xxx.png').convert_alpha()
+                    self.img = pg.transform.scale(self.img, (block_size, block_size))
+                    self.screen.blit(self.img, (x*block_size, y*block_size))
+                elif self.board[y][x] == 2:
+                    self.img = pg.image.load('./res/ooo.jpg').convert_alpha()
+                    self.img = pg.transform.scale(self.img, (block_size, block_size))
+                    self.screen.blit(self.img, (x*block_size, y*block_size))
+
                 rect = pg.Rect(x*block_size, y*block_size, block_size, block_size)
                 pg.draw.rect(self.screen, color['black'], rect, 1)
-
-    def control(self):
         mouse_pos = pg.mouse.get_pos()
         mouse = pg.mouse.get_pressed()[0]
-
+        if mouse:
+            if self.team:
+                self.board[mouse_pos[1]//block_size][mouse_pos[0]//block_size] = 1
+                self.team = False
+            else:
+                self.board[mouse_pos[1]//block_size][mouse_pos[0]//block_size] = 2
+                self.team = True
+            print(self.board)
 
     def update(self):
         self.draw()
-        self.control()
 
 
 class Game(Settings):
@@ -95,6 +106,7 @@ class Game(Settings):
     def run(self):
         run = True
         while run:
+            pg.time.delay(150)
             for ev in pg.event.get():
                 if ev.type == QUIT:
                     run = False
