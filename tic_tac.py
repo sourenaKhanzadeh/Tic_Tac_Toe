@@ -62,6 +62,7 @@ class Board(Settings):
             [0,0,0]
         ]
         self.team = True
+        self.win = 0
 
     def draw(self):
         block_size = 100
@@ -88,9 +89,56 @@ class Board(Settings):
                 self.board[mouse_pos[1]//block_size][mouse_pos[0]//block_size] = 2
                 self.team = True
             print(self.board)
+            self.check()
+
+    def check(self):
+        #check
+            #check row
+            for board in self.board:
+                if board.count(1) == 3:
+                    self.win = 1
+                    break
+                elif board.count(2) == 3:
+                    self.win = 2
+                    break
+
+            #check col
+            count =0
+            for j in range(3):
+                for i in range(3):
+                    if self.board[i][j] == 1:
+                        count+=1
+                    else:
+                        break
+
+                    if self.board[i][j] == 1 and count==3:
+                        self.win = 1
+
+            #check diagnol
+            count = 0
+            j = len(self.board) -1
+            dj = 0
+            for i in range(len(self.board)):
+                print(self.board[j][j])
+                if self.board[i][i] == 1:
+                    count += 1
+                if self.board[j][j] == 1:
+                        dj += 1
+                        j-=1
+
+                if count == 3 or dj == 3:
+                    self.win = self.board[i][i]
+
+            # check win
+            if self.win == 1:
+                print(1, "win")
+            elif self.win == 2:
+                print(2, "win")
+
 
     def update(self):
         self.draw()
+
 
 
 class Game(Settings):
